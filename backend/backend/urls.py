@@ -26,6 +26,8 @@ urlpatterns = [
     path('api/login/', gotologinpage, name='loginpage'),
     path('api/login/access', login_view, name='login'),
     path('api/register/', register, name='register'),
+    path('api/logout/', login_view, name='logout'),
+
     
     path('api/alldepenses', alldepenses, name="depenses"),
     path('api/depenses/add',adddepense , name='adddepense'),

@@ -8,7 +8,7 @@ from bson.objectid import ObjectId  # Import ObjectId for MongoDB document ID ha
 
 def gotoadddepense(request):
     return render(request, 'adddepense.html')
-# Create your views here.
+# FONCTion création
 def adddepense(request):
     if request.method == 'POST':
         # Get data from the form
@@ -37,6 +37,7 @@ def adddepense(request):
 
 
 def alldepenses(request):  # Add request parameter here
+    
     all_depenses = db.depenses.find()  # Retrieve all depenses from MongoDB
     
     # Create a list of depenses with renamed _id
@@ -51,13 +52,12 @@ def alldepenses(request):  # Add request parameter here
             
         }
         depenses_list.append(depense_data)
-
     return render(request, 'depenses.html', {'depenses': depenses_list})
 
 def delete_depense(request, depense_id):
-    # Delete the depense from MongoDB using its ID
+    
     db.depenses.delete_one({'_id': ObjectId(depense_id)})
-    return redirect('depenses')  # Redirect to all depenses page after deletion
+    return redirect('depenses')  
 
 
 def gotoupdate(request):
@@ -65,15 +65,15 @@ def gotoupdate(request):
     
 
 def update_depense(request, depense_id):
-    depense = db.depenses.find_one({'_id': ObjectId(depense_id)})  # Find the depense by ID
+    depense = db.depenses.find_one({'_id': ObjectId(depense_id)})  
 
     if request.method == 'POST':
-        # Get updated data from the form
+        
         title = request.POST.get('title')
         description = request.POST.get('description')
         amount = request.POST.get('amount')
 
-        # Update the depense in MongoDB
+        # maj depense
         db.depenses.update_one(
             {'_id': ObjectId(depense_id)},
             {'$set': {
@@ -84,6 +84,6 @@ def update_depense(request, depense_id):
             }}
         )
 
-        return redirect('depenses')  # Redirect to all depenses page after updating
+        return redirect('depenses')  # Redirection à toues les dépenses
 
-    return render(request, 'updatedepense.html', {'depense': depense})  # Render form with existing data if GET request
+    return render(request, 'updatedepense.html', {'depense': depense}) 

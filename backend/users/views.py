@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from mongo_connection import db  # Import the db object from mongo_connection.py
 
+
 def register(request):
     if request.method == 'POST':
         # Get data from the form
@@ -52,23 +53,44 @@ def gotologinpage(request):
 def login_view(request):  # Renamed to avoid conflict with Django's built-in login function
     if request.method == 'POST':
         email = request.POST.get('email')
-        password = request.POST.get('password')
-        print("hello")
-        print(f"Entered Password: {password}")
-       
-        # Fetch user data from MongoDB
-        user_data = db.users.find_one({'email': email})
-        print(f"Stored Hashed Password: {user_data['password']}")
-        print('hello2')
+      
+        hashed_password = request.POST.get('password')
         
-        # Check if user_data is found and validate password
+       
+        #
+        user_data = db.users.find_one({'email': email})
+        
+       
+        
+        # 
         if user_data['email'] == email:
-            print('hi')
-            if check_password(password, user_data['password']):
+         
+            if check_password(hashed_password, user_data['password']):
                 print("Login successful")  
-            # Here you would typically create a session or token for the user
-            return redirect('depenses')  # Redirect to home page after successful login
+                request.session['user_email'] = email
+               
+                if  (request.session['user_email']):
+                 print ('yess')
+            
+
+                
+            # token à mettre en place
+            return redirect('depenses')
+            
         else:
             messages.error(request, 'Invalid email or password.')
 
     return render(request, 'depenses.html')  # Render login page for GET requests
+
+
+    
+
+
+def logout_view(request):
+    # Clear specific session data
+    del request.session['user_email']
+    
+    # Or logout entirely
+    request.session.flush()  # Clears all session data
+    
+    return redirect('login')
